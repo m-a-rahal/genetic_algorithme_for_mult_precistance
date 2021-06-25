@@ -67,7 +67,7 @@ class Solution():
             return int(''.join([str(i) for i in self._x]))
 
         def mutate(self, mutation_rate, indexes):
-            indexes.sort(key= lambda x : random.random())
+            random.shuffle(indexes)
             for i in range(random.randint(1,self.size)):
                 self._x[i] = random.randint(0,9)
             self.fitness = percistance(self.get_sol())
