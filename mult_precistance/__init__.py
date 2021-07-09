@@ -1,6 +1,7 @@
 import random
 from datetime import datetime
 random.seed(datetime.now())
+from collections import deque
 
 
 def percistance(n):
@@ -35,11 +36,32 @@ class Population():
         self._elements.append(elt)
 
     def reduce_to_size(self):
-        self.sort(key= lambda s : -s.fitness)
+        self.sort(key= lambda s : -s.fitness * (1 - random.random()/9))
         self._elements = self._elements[:self.size]
 
     def __len__(self):
         return self.size
+
+class Weighed_random:
+    def __init__(self, weighs):
+        self.weighs = weighs
+        self.total = sum(w for w in weighs)
+    
+    def random(self):
+        r = random.random()*self.total + 1 
+        for i, weight in enumerate(self.weighs):
+            r -= weight
+            if r <= 0: return i
+        return len(self.weighs) - 1    
+
+def weighted_random(weighs):
+    total = sum(w for w in weighs)
+    r = random.random()*total + 1 
+    for i,weight in enumerate(weighs):
+        r -= weight
+        if r <= 0: return i
+    return len(weighs) - 1
+
 
 class Solution():
         def __init__(self, x):
@@ -68,8 +90,8 @@ class Solution():
 
         def mutate(self, mutation_rate, indexes):
             random.shuffle(indexes)
-            for i in range(random.randint(1,self.size)):
-                self._x[i] = random.randint(0,9)
+            for i in range(random.randint(1,int(self.size*mutation_rate))):
+                self._x[indexes[i]] = random.randint(0,9)
             self.fitness = percistance(self.get_sol())
             return self
 

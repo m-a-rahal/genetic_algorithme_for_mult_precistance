@@ -1,3 +1,4 @@
+# ADD roulette parents croissing + smart selection in last step to avoid premature convergeance 
 import random
 from datetime import datetime
 random.seed(datetime.now())
@@ -12,10 +13,11 @@ class GA():
         self.cross_rate = cross_rate
         self.max_iter = max_iter
         # indexes used for random mutation spots
-        self.indexes = list(range(self.N))
+        self.indexes = None
 
     def solve(self, length = 20):
         population = Population(self.N, length)
+        self.indexes = list(range(length))
         for i in range(self.max_iter):
             children = []
             population.sort(key= lambda x : random.random())
@@ -41,7 +43,7 @@ class GA():
         if (random.random() < self.mutation_rate):
             return sol.mutate(self.mutation_rate, self.indexes)
         else:
-            return sol
+            return Solution(sol)
 
 
 sol = GA(max_iter = 100).solve(length = 15)
